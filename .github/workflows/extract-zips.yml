@@ -1,9 +1,9 @@
-name: Extract ZIP Files to the Same Folder
+name: Extract ZIP Files to Images Folder
 
 on:
   push:
     paths:
-      - 'uploads/*.zip'  # Trigger on any ZIP file uploaded to the 'uploads' folder
+      - 'images/*.zip'  # Trigger on any ZIP file uploaded to the 'images' folder
 
 jobs:
   unzip:
@@ -14,22 +14,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Step 2: Extract the first ZIP file (file1.zip)
-      - name: Extract file1.zip
+      # Step 2: Extract the first ZIP file (a.zip) directly into images/
+      - name: Extract a.zip
         run: |
-          mkdir -p uploads/extracted  # Create a target folder (uploads/extracted)
-          unzip 'uploads/file1.zip' -d uploads/extracted/  # Extract to this folder
+          unzip 'images/a.zip' -d images/  # Extract contents directly to images/
 
-      # Step 3: Extract the second ZIP file (file2.zip)
-      - name: Extract file2.zip
+      # Step 3: Extract the second ZIP file (b.zip) directly into images/
+      - name: Extract b.zip
         run: |
-          unzip 'uploads/file2.zip' -d uploads/extracted/  # Extract to the same target folder
+          unzip 'images/b.zip' -d images/  # Extract contents directly to images/
 
-      # Step 4: Commit and push changes back to the repository
+      # Step 4: Commit and push changes
       - name: Commit and push changes
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add uploads/extracted/*  # Add all extracted files
-          git commit -m "Extracted files from file1.zip and file2.zip"
-          git push origin main  # Push the changes back to the repository
+          git add images/*  # Add all extracted files to the commit
+          git commit -m "Extracted files from a.zip and b.zip into images/"
+          git push origin main  # Push changes back to the repository
