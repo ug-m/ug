@@ -1,0 +1,31 @@
+name: Delete a.zip and b.zip from Images Folder
+
+on:
+  push:
+    paths:
+      - 'images/a.zip'  # Trigger when a.zip is uploaded or modified
+      - 'images/b.zip'  # Trigger when b.zip is uploaded or modified
+
+jobs:
+  delete-zips:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Step 2: Delete a.zip and b.zip from images/ folder
+      - name: Delete a.zip and b.zip
+        run: |
+          rm -f images/a.zip  # Remove a.zip
+          rm -f images/b.zip  # Remove b.zip
+
+      # Step 3: Commit and push changes
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add images/a.zip images/b.zip  # Stage the deletion of the files
+          git commit -m "Deleted a.zip and b.zip from images folder"
+          git push origin main  # Push the deletion back to the repository
