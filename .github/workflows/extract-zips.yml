@@ -1,0 +1,35 @@
+name: Extract ZIP Files to the Same Folder
+
+on:
+  push:
+    paths:
+      - 'uploads/*.zip'  # Trigger on any ZIP file uploaded to the 'uploads' folder
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Step 2: Extract the first ZIP file (file1.zip)
+      - name: Extract file1.zip
+        run: |
+          mkdir -p uploads/extracted  # Create a target folder (uploads/extracted)
+          unzip 'uploads/file1.zip' -d uploads/extracted/  # Extract to this folder
+
+      # Step 3: Extract the second ZIP file (file2.zip)
+      - name: Extract file2.zip
+        run: |
+          unzip 'uploads/file2.zip' -d uploads/extracted/  # Extract to the same target folder
+
+      # Step 4: Commit and push changes back to the repository
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add uploads/extracted/*  # Add all extracted files
+          git commit -m "Extracted files from file1.zip and file2.zip"
+          git push origin main  # Push the changes back to the repository
