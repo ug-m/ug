@@ -1,0 +1,33 @@
+name: Unzip Uploaded ZIP File
+
+# Trigger this action on a push event that includes a ZIP file
+on:
+  push:
+    paths:
+      - '**.zip'  # Only trigger the action for ZIP files
+
+jobs:
+  unzip:
+    runs-on: ubuntu-latest  # Run on a Ubuntu runner
+
+    steps:
+      # Checkout the repository to access files
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Extract ZIP file to a temporary folder and move files
+      - name: Extract ZIP file
+        run: |
+          mkdir extracted_files
+          unzip '*.zip' -d extracted_files/  # Unzip all ZIP files in the repository
+          mv extracted_files/* .  # Move extracted files to the root of the repository
+          rmdir extracted_files  # Clean up empty folder
+
+      # Commit and push the extracted files back to the repository
+      - name: Commit extracted files
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m "Extracted files from uploaded ZIP"
+          git push
